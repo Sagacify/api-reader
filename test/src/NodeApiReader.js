@@ -57,6 +57,26 @@ describe('ApiReader', () => {
       expect(customErrorStatus).to.equal(500);
     });
 
+    it('should use basic authentication on get request', async () => {
+      nock('http://fake-api')
+        .get('/profile')
+        .basicAuth({ user: 'me', pass: 'my-secret' })
+        .reply(200, { firstname: 'Olivier', company: 'Sagacify' });
+
+      const apiReader = new ApiReader('http://fake-api', {
+        auth: {
+          username: 'me',
+          password: 'my-secret'
+        }
+      });
+      const result = await apiReader.get('/profile');
+
+      expect(result).to.deep.equal({
+        firstname: 'Olivier',
+        company: 'Sagacify'
+      });
+    });
+
     it('should send a get request and json parse the response', async () => {
       nock('http://fake-api')
         .get('/profile')

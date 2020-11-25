@@ -3,7 +3,7 @@ const { IsoApiReader } = require('./IsoApiReader');
 const fetch = require('node-fetch');
 const { Headers } = fetch;
 
-const btoa = text => ArrayBuffer.from(text).toString('base64');
+const btoa = text => Buffer.from(text).toString('base64');
 
 module.exports.ApiReader = class ApiReader extends IsoApiReader {
   constructor (baseUrl, options) {

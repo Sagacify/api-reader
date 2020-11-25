@@ -13,6 +13,7 @@ It features:
   - API base url recording at constuction for smaller calls
   - automatic request body JSON stringifying based body type (objects are stringified)
   - automatic response body JSON parsing based on the Content-Type of the Api response
+  - autamtic base64 encoding on Basic Authentication
   - custom http error handling hook
 
 ## Acknowledgment
