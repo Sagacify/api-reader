@@ -31,8 +31,9 @@ module.exports.IsoApiReader = class IsoApiReader {
     body = null
   } = {}) {
     const url = new URL(this.baseUrl);
-    // Using directly this.fetch cause an "Illegal invocation" error in Browser
+    // Using directly this.[fetch|btoa] cause an "Illegal invocation" error in Browser
     const fetch = this.fetch;
+    const btoa = this.btoa;
 
     url.pathname = `${url.pathname}/${path}`.replace(/\/+/, '/');
 
@@ -49,7 +50,7 @@ module.exports.IsoApiReader = class IsoApiReader {
 
       fetchOptions.headers.set(
         'Authorization',
-        'Basic ' + this.btoa.encode(`${username}:${password}`)
+        'Basic ' + btoa(`${username}:${password}`)
       );
     }
 
