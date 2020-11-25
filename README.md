@@ -1,9 +1,8 @@
 # ApiReader
 
-[![Continuous Integration](https://github.com/sagacify/api-reader/workflows/Continuous%20Integration/badge.svg?branch=main)](https://github.com/sagacify/api-reader/actions)
+[![CircleCI](https://circleci.com/gh/Sagacify/api-reader.svg?style=svg)](https://circleci.com/gh/Sagacify/api-reader)
 [![Coverage Status](https://coveralls.io/repos/github/Sagacify/api-reader/badge.svg?branch=main)](https://coveralls.io/github/Sagacify/api-reader?branch=main)
 [![npm version](https://img.shields.io/npm/v/@sagacify/api-reader.svg)](https://www.npmjs.com/package/@sagacify/api-reader)
-[![Dependency Status](https://david-dm.org/sagacify/api-reader.svg)](https://david-dm.org/sagacify/api-reader)
 
 ## Description
 
