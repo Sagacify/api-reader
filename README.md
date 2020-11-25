@@ -1,7 +1,7 @@
 # ApiReader
 
-[![Continuous Integration](https://github.com/sagacify/api-reader/workflows/Continuous%20Integration/badge.svg?branch=master)](https://github.com/sagacify/api-reader/actions)
-[![Coverage Status](https://coveralls.io/repos/github/sagacify/api-reader/badge.svg?branch=refs/heads/master)](https://coveralls.io/github/sagacify/api-reader?branch=refs/heads/master)
+[![Continuous Integration](https://github.com/sagacify/api-reader/workflows/Continuous%20Integration/badge.svg?branch=main)](https://github.com/sagacify/api-reader/actions)
+[![Coverage Status](https://coveralls.io/repos/github/Sagacify/api-reader/badge.svg?branch=main)](https://coveralls.io/github/Sagacify/api-reader?branch=main)
 [![npm version](https://img.shields.io/npm/v/@sagacify/api-reader.svg)](https://www.npmjs.com/package/@sagacify/api-reader)
 [![Dependency Status](https://david-dm.org/sagacify/api-reader.svg)](https://david-dm.org/sagacify/api-reader)
 
