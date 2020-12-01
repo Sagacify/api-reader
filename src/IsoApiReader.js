@@ -5,6 +5,7 @@ module.exports.IsoApiReader = class IsoApiReader {
     baseUrl, {
       auth,
       headers = {},
+      queryOptions = {},
       httpErrorHandler
     } = {},
     {
@@ -13,26 +14,29 @@ module.exports.IsoApiReader = class IsoApiReader {
       btoa
     }
   ) {
-    this.fetch = fetch;
-    this.Headers = Headers;
-    this.btoa = btoa;
-    this.httpErrorHandler = httpErrorHandler;
-
     if (!baseUrl) {
       throw new Error('ApiReader constructor baseUrl is required');
     }
+
     this.baseUrl = baseUrl;
+
     this.auth = auth;
     this.baseHeaders = headers;
+    this.queryOptions = queryOptions;
+    this.httpErrorHandler = httpErrorHandler;
+
+    this.fetch = fetch;
+    this.Headers = Headers;
+    this.btoa = btoa;
   }
 
   static headersToObject (headers) {
-    const headerObject = {};
+    const headersObject = {};
     for (const [key, value] of headers.entries()) {
-      headerObject[key] = value;
+      headersObject[key] = value;
     }
 
-    return headerObject;
+    return headersObject;
   }
 
   async req (path = '', {
@@ -66,7 +70,7 @@ module.exports.IsoApiReader = class IsoApiReader {
     }
 
     if (query) {
-      url.search = qs.stringify(query);
+      url.search = qs.stringify(query, this.queryOptions);
     }
 
     if (body) {
