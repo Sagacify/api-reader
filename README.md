@@ -32,18 +32,18 @@ $ npm install @sagacify/api-reader
 ### In your project (Browser or NodeJS)
 
 ```js
-const { ApiReader } = require('ApiReader');
+const { ApiReader } = require('@sagacify/ApiReader');
 // OR
-import { ApiReader } from 'ApiReader';
+import { ApiReader } from '@sagacify/ApiReader';
 
 const main = () => {
   const bearerToken = 'super-secret-token';
-  const { apiReader } = new ApiReader('https://api.twitter.com/2/', {
+  const apiReader = new ApiReader('https://api.twitter.com/2/', {
     headers: {
       authorization: `Bearer ${bearerToken}`
     },
-    httpErrorHandler: response => {
-      console.error(`My custom error ${response.status}`)
+    httpErrorHandler: (req, res) => {
+      console.error(`My custom error ${res.status} for ${req.method} on ${req.url}`)
     }
   });
 
@@ -77,7 +77,17 @@ main();
     - password: the password of the Basic Authentication
   - headers:
     - [header-name]: header value
-  - httpErrorHandler: an http error handler function which recieve the response object
+  - httpErrorHandler: an http error handler function which recieve the request object
+    The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Request):
+    ```js
+    {
+      url: <string>,
+      method: <string>,
+      headers: <object>,
+      body: <string | object>
+    }
+    ```
+    and the response object
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Response):
 
     ```js
@@ -87,7 +97,8 @@ main();
       ok: <boolean>,
       redirected: <boolean>,
       type: <string>,
-      headers: <object>
+      headers: <object>,
+      body: <string | object> // depend on the parsing
     }
     ```
     By default any error will generate a basic error with the `code` field set to "HTTP_${response.status}"

@@ -45,15 +45,18 @@ describe('ApiReader', () => {
         .reply(500);
 
       let customErrorStatus;
+      let reqMethod;
 
       const apiReader = new ApiReader('http://fake-api', {
-        httpErrorHandler: res => {
+        httpErrorHandler: (req, res) => {
+          reqMethod = req.method;
           customErrorStatus = res.status;
         }
       });
 
       await apiReader.get('/profile');
 
+      expect(reqMethod).to.equal('GET');
       expect(customErrorStatus).to.equal(500);
     });
 
@@ -84,6 +87,27 @@ describe('ApiReader', () => {
 
       const apiReader = new ApiReader('http://fake-api');
       const result = await apiReader.get('/profile');
+
+      expect(result).to.deep.equal({
+        firstname: 'Olivier',
+        company: 'Sagacify'
+      });
+    });
+
+    it('should send a get request with query string', async () => {
+      nock('http://fake-api')
+        .get('/profile')
+        .query({
+          fields: ['firstname', 'company']
+        })
+        .reply(200, { firstname: 'Olivier', company: 'Sagacify' });
+
+      const apiReader = new ApiReader('http://fake-api');
+      const result = await apiReader.get('/profile', {
+        query: {
+          fields: ['firstname', 'company']
+        }
+      });
 
       expect(result).to.deep.equal({
         firstname: 'Olivier',

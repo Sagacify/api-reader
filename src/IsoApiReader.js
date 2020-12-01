@@ -1,3 +1,5 @@
+const qs = require('qs');
+
 module.exports.IsoApiReader = class IsoApiReader {
   constructor (
     baseUrl, {
@@ -22,6 +24,15 @@ module.exports.IsoApiReader = class IsoApiReader {
     this.baseUrl = baseUrl;
     this.auth = auth;
     this.baseHeaders = headers;
+  }
+
+  static headersToObject (headers) {
+    const headerObject = {};
+    for (const [key, value] of headers.entries()) {
+      headerObject[key] = value;
+    }
+
+    return headerObject;
   }
 
   async req (path = '', {
@@ -55,9 +66,7 @@ module.exports.IsoApiReader = class IsoApiReader {
     }
 
     if (query) {
-      const searchParams = new URLSearchParams(query);
-
-      url.search = searchParams.toString();
+      url.search = qs.stringify(query);
     }
 
     if (body) {
@@ -78,28 +87,25 @@ module.exports.IsoApiReader = class IsoApiReader {
       .split(';', 1)[0]
       .toLocaleLowerCase()
       .trim();
-    const resHeaders = {};
 
-    for (const [key, value] of fetchRes.headers.entries()) {
-      resHeaders[key] = value;
-    }
-
-    const res = {
-      url: fetchRes.url,
-      status: fetchRes.status,
-      ok: fetchRes.ok,
-      redirected: fetchRes.redirected,
-      type: fetchRes.type,
-      headers: resHeaders
-    };
-
+    let resBody;
     if (contentType === 'application/json') {
-      res.body = await fetchRes.json();
+      resBody = await fetchRes.json();
     } else {
-      res.body = await fetchRes.text();
+      resBody = await fetchRes.text();
     }
 
-    if (!res.ok) {
+    if (!fetchRes.ok) {
+      const res = {
+        url: fetchRes.url,
+        status: fetchRes.status,
+        ok: fetchRes.ok,
+        redirected: fetchRes.redirected,
+        type: fetchRes.type,
+        headers: IsoApiReader.headersToObject(fetchRes.headers),
+        body: resBody
+      };
+
       if (!this.httpErrorHandler) {
         const error = new Error(`Http Error ${res.status} for ${fetchOptions.method} ${url.toString()}`);
         error.code = `HTTP_${res.status}`;
@@ -107,10 +113,17 @@ module.exports.IsoApiReader = class IsoApiReader {
         throw error;
       }
 
-      return this.httpErrorHandler(res);
+      const req = {
+        url: url.toString(),
+        method: fetchOptions.method,
+        headers: IsoApiReader.headersToObject(fetchOptions.headers),
+        body: fetchOptions.body
+      };
+
+      return this.httpErrorHandler(req, res);
     }
 
-    return res.body;
+    return resBody;
   }
 
   async head (path, options) {
