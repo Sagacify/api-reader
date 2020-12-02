@@ -11,9 +11,10 @@ Browser version is based on native fetch to be as tiny as possible if you use tr
 It features:
 
   - API base url recording at constuction for smaller calls
+  - automatic query string stringification (based on qs)
   - automatic request body JSON stringifying based body type (objects are stringified)
   - automatic response body JSON parsing based on the Content-Type of the Api response
-  - autamtic base64 encoding on Basic Authentication
+  - automatic base64 encoding on Basic Authentication
   - custom http error handling hook
 
 ## Acknowledgment
@@ -77,6 +78,7 @@ main();
     - password: the password of the Basic Authentication
   - headers:
     - [header-name]: header value
+  - queryOptions: query stringification is based on the [qs stringify](https://www.npmjs.com/package/qs#stringifying) package, here you can pass any qs option you need
   - httpErrorHandler: an http error handler function which recieve the request object
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Request):
     ```js
@@ -102,7 +104,6 @@ main();
     }
     ```
     By default any error will generate a basic error with the `code` field set to "HTTP_${response.status}"
-
 
 **head(path, options)**
 
