@@ -79,6 +79,15 @@ main();
   - headers:
     - [header-name]: header value
   - queryOptions: query stringification is based on the [qs stringify](https://www.npmjs.com/package/qs#stringifying) package, here you can pass any qs option you need
+  - preRequestHandler: a pre-request handler function which recieve the fetch options and must return the final fetch options:
+    ```js
+    {
+      method: <string>, // in uppercase
+      headers: <Headers>, // see: https://developer.mozilla.org/fr/docs/Web/API/Headers
+      body: <string | object>
+    }
+    ```
+    *Note: if the final fetchOptions.body is an objet, it will be JSON stringified automatically and the Content-Type will set to "application/json"*
   - httpErrorHandler: an http error handler function which recieve the request object
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Request):
     ```js

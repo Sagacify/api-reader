@@ -6,6 +6,7 @@ module.exports.IsoApiReader = class IsoApiReader {
       auth,
       headers = {},
       queryOptions = {},
+      preRequestHandler,
       httpErrorHandler
     } = {},
     {
@@ -23,6 +24,7 @@ module.exports.IsoApiReader = class IsoApiReader {
     this.auth = auth;
     this.baseHeaders = headers;
     this.queryOptions = queryOptions;
+    this.preRequestHandler = preRequestHandler;
     this.httpErrorHandler = httpErrorHandler;
 
     this.fetch = fetch;
@@ -52,7 +54,7 @@ module.exports.IsoApiReader = class IsoApiReader {
 
     url.pathname = `${url.pathname}/${path}`.replace(/\/+/, '/');
 
-    const fetchOptions = {
+    let fetchOptions = {
       method: method.toUpperCase(),
       headers: new this.Headers({
         ...this.baseHeaders,
@@ -71,6 +73,10 @@ module.exports.IsoApiReader = class IsoApiReader {
 
     if (query) {
       url.search = qs.stringify(query, this.queryOptions);
+    }
+
+    if (this.preRequestHandler) {
+      fetchOptions = this.preRequestHandler({ ...fetchOptions, body });
     }
 
     if (body) {
