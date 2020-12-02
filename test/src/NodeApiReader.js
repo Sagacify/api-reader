@@ -39,6 +39,29 @@ describe('ApiReader', () => {
       expect(error.code).to.equal('HTTP_500');
     });
 
+    it('should call preRequestHandler when defined', async () => {
+      const payload = { firstname: 'Olivier', company: 'Sagacify' };
+
+      nock('http://fake-api')
+        .post('/profile', payload)
+        .reply(200, { firstname: 'Nicolas', company: 'Sagacify' });
+
+      let newFirstName;
+
+      const apiReader = new ApiReader('http://fake-api', {
+        preRequestHandler: fetchOptions => {
+          newFirstName = 'Nicolas';
+          fetchOptions.body.firstname = newFirstName;
+
+          return fetchOptions;
+        }
+      });
+
+      await apiReader.post('/profile', { body: payload });
+
+      expect(newFirstName).to.equal('Nicolas');
+    });
+
     it('should call httpErrorHandler on http status greather than 299', async () => {
       nock('http://fake-api')
         .get('/profile')
@@ -187,12 +210,13 @@ describe('ApiReader', () => {
     });
 
     it('should send a post request and json parse the response', async () => {
-      nock('http://fake-api', { firstname: 'Olivier', company: 'Sagacify' })
+      const payload = { firstname: 'Olivier', company: 'Sagacify' };
+      nock('http://fake-api', payload)
         .post('/profile')
-        .reply(201, { id: 1, firstname: 'Olivier', company: 'Sagacify' });
+        .reply(201, { id: 1, ...payload });
 
       const apiReader = new ApiReader('http://fake-api');
-      const result = await apiReader.post('/profile');
+      const result = await apiReader.post('/profile', { body: payload });
 
       expect(result).to.deep.equal({
         id: 1,
@@ -225,18 +249,15 @@ describe('ApiReader', () => {
     });
 
     it('should send a put request and json parse the response', async () => {
-      nock('http://fake-api', { id: 1, firstname: 'José', company: 'Sagacify' })
-        .put('/profile')
-        .reply(200, { id: 1, firstname: 'José', company: 'Sagacify' });
+      const payload = { id: 1, firstname: 'José', company: 'Sagacify' };
+      nock('http://fake-api')
+        .put('/profile', payload)
+        .reply(200, payload);
 
       const apiReader = new ApiReader('http://fake-api');
-      const result = await apiReader.put('/profile');
+      const result = await apiReader.put('/profile', { body: payload });
 
-      expect(result).to.deep.equal({
-        id: 1,
-        firstname: 'José',
-        company: 'Sagacify'
-      });
+      expect(result).to.deep.equal(payload);
     });
   });
 
@@ -263,12 +284,13 @@ describe('ApiReader', () => {
     });
 
     it('should send a patch request and json parse the response', async () => {
-      nock('http://fake-api', { id: 1, firstname: 'José', company: 'Sagacify' })
+      const payload = { id: 1, firstname: 'José', company: 'Sagacify' };
+      nock('http://fake-api', payload)
         .patch('/profile')
-        .reply(200, { id: 1, firstname: 'José', company: 'Sagacify' });
+        .reply(200, payload);
 
       const apiReader = new ApiReader('http://fake-api');
-      const result = await apiReader.patch('/profile');
+      const result = await apiReader.patch('/profile', { body: payload });
 
       expect(result).to.deep.equal({
         id: 1,
