@@ -124,8 +124,8 @@ Performs an HEAD request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
@@ -141,8 +141,8 @@ Performs an GET request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
@@ -158,8 +158,8 @@ Performs an POST request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
@@ -175,8 +175,8 @@ Performs an PUT request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
@@ -192,8 +192,8 @@ Performs an PATCH request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
@@ -209,8 +209,8 @@ Performs an DELETE request to the api
 - options:
   - headers:
     - [header-name]: header value
-    - body: body value, object will be automatically JSON stringified
-    - query: query object
+  - query: query object
+  - body: body value, object will be automatically JSON stringified
 
 *Response*
 
