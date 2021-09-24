@@ -10,12 +10,12 @@ ApiReader is a NodeJS & Browser package meant to simplify your requests to any A
 Browser version is based on native fetch to be as tiny as possible if you use treechecking in your toolbelt (like webpack, create-react-app, ...).
 It features:
 
-  - API base url recording at constuction for smaller calls
-  - automatic query string stringification (based on qs)
-  - automatic request body JSON stringifying based body type (objects are stringified)
-  - automatic response body JSON parsing based on the Content-Type of the Api response
-  - automatic base64 encoding on Basic Authentication
-  - custom http error handling hook
+- API base url recording at constuction for smaller calls
+- automatic query string stringification (based on qs)
+- automatic request body JSON stringifying based body type (objects are stringified)
+- automatic response body JSON parsing based on the Content-Type of the Api response
+- automatic base64 encoding on Basic Authentication
+- custom http error handling hook
 
 ## Acknowledgment
 
@@ -33,9 +33,9 @@ $ npm install @sagacify/api-reader
 ### In your project (Browser or NodeJS)
 
 ```js
-const { ApiReader } = require('@sagacify/ApiReader');
+const { ApiReader } = require('@sagacify/api-reader');
 // OR
-import { ApiReader } from '@sagacify/ApiReader';
+import { ApiReader } from '@sagacify/api-reader';
 
 const main = () => {
   const bearerToken = 'super-secret-token';
@@ -65,21 +65,24 @@ const main = () => {
 main();
 ```
 
-*Note: based on the context either the Browser or the NodeJS version will be used*
+> Note: based on the context either the Browser or the NodeJS version will be used
 
 ### API
 
-**constructor(baseUrl, options)**
+#### constructor(baseUrl, options)
 
-- baseUrl: the base url of the api (e.g.: https://api.twitter.com/2/)
-- options:
-  - auth:
-    - username: the username of the Basic Authentication
-    - password: the password of the Basic Authentication
-  - headers:
-    - [header-name]: header value
-  - queryOptions: query stringification is based on the [qs stringify](https://www.npmjs.com/package/qs#stringifying) package, here you can pass any qs option you need
-  - preRequestHandler: a pre-request handler function which recieve the fetch options and must return the final fetch options:
+##### Parameters
+
+- **baseUrl**: the base url of the api (e.g.: <https://api.twitter.com/2/>)
+- **options**:
+  - **auth**:
+    - **username**: the username of the Basic Authentication
+    - **password**: the password of the Basic Authentication
+  - **headers**:
+    - **[header-name]**: header value
+  - **queryOptions**: query stringification is based on the [qs stringify](https://www.npmjs.com/package/qs#stringifying) package, here you can pass any qs option you need
+  - **preRequestHandler**: a pre-request handler function which recieve the fetch options and must return the final fetch options:
+
     ```js
     {
       method: <string>, // in uppercase
@@ -87,9 +90,13 @@ main();
       body: <string | object>
     }
     ```
-    *Note: if the final fetchOptions.body is an objet, it will be JSON stringified automatically and the Content-Type will set to "application/json"*
-  - httpErrorHandler: an http error handler function which recieve the request object
+
+    > Note: if the final fetchOptions.body is an objet, it will be JSON stringified automatically and the Content-Type will set to "application/json"
+
+  - **httpErrorHandler**: an http error handler function which recieve the request object.
+
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Request):
+
     ```js
     {
       url: <string>,
@@ -98,6 +105,7 @@ main();
       body: <string | object>
     }
     ```
+
     and the response object
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Response):
 
@@ -112,107 +120,108 @@ main();
       body: <string | object> // depend on the parsing
     }
     ```
+
     By default any error will generate a basic error with the `code` field set to "HTTP_${response.status}"
 
-**head(path, options)**
+#### head(path, options)
 
 Performs an HEAD request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response
 
 Returns the response body automatically parsed according the response's Content-Type
 
-**get(path, options)**
+#### get(path, options)
 
 Performs an GET request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response
 
 Returns the response body automatically parsed according the response's Content-Type
 
-**post(path, options)**
+#### post(path, options)
 
 Performs an POST request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response
 
 Returns the response body automatically parsed according the response's Content-Type
 
-**put(path, options)**
+#### put(path, options)
 
 Performs an PUT request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response
 
 Returns the response body automatically parsed according the response's Content-Type
 
-**patch(path, options)**
+#### patch(path, options)
 
 Performs an PATCH request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response
 
 Returns the response body automatically parsed according the response's Content-Type
 
-**delete(path, options)**
+#### delete(path, options)
 
 Performs an DELETE request to the api
 
-*Parameters*
+##### Parameters
 
-- path: the path from the baseUrl
-- options:
-  - headers:
-    - [header-name]: header value
-  - query: query object
-  - body: body value, object will be automatically JSON stringified
+- **path**: the path from the baseUrl
+- **options**:
+  - **headers**:
+    - **[header-name]**: header value
+  - **query**: query object
+  - **body**: body value, object will be automatically JSON stringified
 
-*Response*
+##### Response*=
 
 Returns the response body automatically parsed according the response's Content-Type
 
@@ -222,12 +231,12 @@ Returns the response body automatically parsed according the response's Content-
 $ npm test:all
 ```
 
-*Note: that's the one you want to use most of the time*
+> Note: that's the one you want to use most of the time
 
 ### To do
 
-  - [ ] improve automatique response parsing, for now buffer are not managed
-  - [ ] add browser unit tests
+- [ ] improve automatique response parsing, for now buffer are not managed
+- [ ] add browser unit tests
 
 ## Reporting bugs and contributing
 
