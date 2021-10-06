@@ -27,15 +27,11 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Setup environment variables
-          command: |
-            echo 'export COVERALLS_SERVICE_JOB_ID="$CIRCLE_BUILD_NUM"' >> $BASH_ENV
-      - run:
           name: Run lint
           command: npm run test:lint
       - run:
           name: Run tests & coverage
-          command: npm run test:coveralls
+          command: npm run test:cover
   publish:
     <<: *defaults
     steps:

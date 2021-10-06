@@ -20,8 +20,7 @@
     "format": "semistandard --fix",
     "test:spec": "mocha --recursive",
     "test:lint": "semistandard --verbose | snazzy",
-    "test:cover": "nyc --reporter=text-summary --reporter=html npm run test:spec",
-    "test:coveralls": "nyc npm run test:spec && nyc report --reporter=text-lcov | coveralls",
+    "test:cover": "nyc --reporter=lcov --reporter=text-summary npm run test:spec",
     "test": "npm run test:lint && npm run test:cover"
   },
   "dependencies": {
@@ -30,7 +29,6 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "coveralls": "^3.1.0",
     "mocha": "^8.1.1",
     "nock": "^13.0.5",
     "nyc": "^15.1.0",
@@ -39,8 +37,15 @@
     "snazzy": "^8.0.0"
   },
   "nyc": {
+    "check-coverage": true,
+    "lines": 80,
     "include": [
       "src/**/*.js"
+    ],
+    "exclude": [
+      "src/index.js",
+      "src/server.js",
+      "src/worker.js"
     ]
   },
   "semistandard": {
