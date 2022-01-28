@@ -1,27 +1,16 @@
 import qs from 'qs';
-import nFetch, { Headers as nHeaders, BodyInit as nBodyInit } from 'node-fetch';
+import {
+  Headers as nHeaders,
+  BodyInit as nBodyInit,
+  RequestInit as nRequestInit
+} from 'node-fetch';
 
 type IsoHeadersClass = typeof Headers | typeof nHeaders;
 type IsoHeaders = Headers | nHeaders;
 type IsoBody = BodyInit | nBodyInit | null;
+type IsoRequestInit = RequestInit | nRequestInit;
 
-function isNodeBody(input: IsoBody): input is nBodyInit {
-  return (input as any)?.buffer !== undefined;
-}
-
-// function test(input: IsoBody): void {
-//   if (isNodeBody(input)) {
-//     input.body
-//   }
-// }
-
-type IsoFetchOptions = {
-  method: string;
-  headers: IsoHeaders;
-  body?: IsoBody;
-};
-
-type IsoFetch = typeof fetch | typeof nFetch;
+type IsoFetch = (url: RequestInfo, init?: IsoRequestInit) => Promise<Response>;
 
 type SimpleRequest = {
   url: string;
@@ -45,7 +34,7 @@ type Auth = {
   password?: string;
 };
 
-type PreRequestHandler = (options: IsoFetchOptions) => IsoFetchOptions;
+type PreRequestHandler = (options: IsoRequestInit) => IsoRequestInit;
 type HttpErrorHandler = (req: SimpleRequest, res: SimpleResponse) => void;
 
 export type ApiReaderOptions = {
@@ -130,7 +119,7 @@ export class IsoApiReader {
   }
 
   mergeHeaders(baseHeaders: IsoHeaders, newHeaders: IsoHeaders): IsoHeaders {
-    const finalHeaders = new this.Headers(baseHeaders);
+    const finalHeaders = new this.Headers(baseHeaders as nHeaders);
 
     newHeaders.forEach((name, value) => {
       finalHeaders.set(name, value);
@@ -151,7 +140,7 @@ export class IsoApiReader {
     url.pathname = `${url.pathname}/${path}`.replace(/\/+/, '/');
     const reqHeaders = new this.Headers(headers);
 
-    let fetchOptions: IsoFetchOptions = {
+    let fetchOptions: IsoRequestInit = {
       method: method.toUpperCase(),
       headers: this.mergeHeaders(this.baseHeaders, reqHeaders)
     };
@@ -161,7 +150,7 @@ export class IsoApiReader {
     if (finalAuth) {
       const { username, password } = finalAuth;
 
-      fetchOptions.headers.set(
+      (fetchOptions.headers as IsoHeaders).set(
         'Authorization',
         `Basic ${btoa(`${username || ''}:${password || ''}`)}`
       );
@@ -179,7 +168,10 @@ export class IsoApiReader {
       const finalJson = json !== undefined ? json : this.json;
 
       if (finalJson) {
-        fetchOptions.headers.set('Content-Type', 'application/json');
+        (fetchOptions.headers as IsoHeaders).set(
+          'Content-Type',
+          'application/json'
+        );
         fetchOptions.body = JSON.stringify(body);
       } else {
         fetchOptions.body = body;
@@ -222,9 +214,11 @@ export class IsoApiReader {
 
       const req = {
         url: url.toString(),
-        method: fetchOptions.method,
-        headers: IsoApiReader.headersToObject(fetchOptions.headers),
-        body: fetchOptions.body
+        method: fetchOptions.method as string,
+        headers: IsoApiReader.headersToObject(
+          fetchOptions.headers as IsoHeaders
+        ),
+        body: fetchOptions.body as IsoBody
       };
 
       return this.httpErrorHandler(req, res);
