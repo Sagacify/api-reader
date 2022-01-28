@@ -1,15 +1,9 @@
-const expect = require('chai').expect;
-const nock = require('nock');
-const { ApiReader } = require('../../src/NodeApiReader');
+import { expect } from 'chai';
+import nock from 'nock';
+import { ApiReader } from '../../src/NodeApiReader';
 
 describe('ApiReader', () => {
   describe('constructor', () => {
-    it('should error when no base url provided', async () => {
-      const create = () => new ApiReader();
-
-      expect(create).to.throw();
-    });
-
     it('should create an api reader instance', async () => {
       const create = () => new ApiReader('http://localhost:8080');
 
@@ -23,9 +17,7 @@ describe('ApiReader', () => {
     });
 
     it('should generate an error on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .get('/profile')
-        .reply(500);
+      nock('http://fake-api').get('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
       let error;
@@ -49,7 +41,7 @@ describe('ApiReader', () => {
       let newFirstName;
 
       const apiReader = new ApiReader('http://fake-api', {
-        preRequestHandler: fetchOptions => {
+        preRequestHandler: (fetchOptions) => {
           newFirstName = 'Nicolas';
           fetchOptions.body.firstname = newFirstName;
 
@@ -63,9 +55,7 @@ describe('ApiReader', () => {
     });
 
     it('should call httpErrorHandler on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .get('/profile')
-        .reply(500);
+      nock('http://fake-api').get('/profile').reply(500);
 
       let customErrorStatus;
       let reqMethod;
@@ -139,9 +129,7 @@ describe('ApiReader', () => {
     });
 
     it('should send a get request and leave text the response', async () => {
-      nock('http://fake-api')
-        .get('/message/1')
-        .reply(200, 'Some message');
+      nock('http://fake-api').get('/message/1').reply(200, 'Some message');
 
       const apiReader = new ApiReader('http://fake-api');
       const result = await apiReader.get('/message/1');
@@ -156,9 +144,7 @@ describe('ApiReader', () => {
     });
 
     it('should generate an error on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .head('/profile')
-        .reply(500);
+      nock('http://fake-api').head('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
       let error;
@@ -193,9 +179,7 @@ describe('ApiReader', () => {
     });
 
     it('should generate an error on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .post('/profile')
-        .reply(500);
+      nock('http://fake-api').post('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
       let error;
@@ -232,9 +216,7 @@ describe('ApiReader', () => {
     });
 
     it('should generate an error on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .put('/profile')
-        .reply(500);
+      nock('http://fake-api').put('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
       let error;
@@ -250,9 +232,7 @@ describe('ApiReader', () => {
 
     it('should send a put request and json parse the response', async () => {
       const payload = { id: 1, firstname: 'José', company: 'Sagacify' };
-      nock('http://fake-api')
-        .put('/profile', payload)
-        .reply(200, payload);
+      nock('http://fake-api').put('/profile', payload).reply(200, payload);
 
       const apiReader = new ApiReader('http://fake-api');
       const result = await apiReader.put('/profile', { body: payload });
@@ -267,9 +247,7 @@ describe('ApiReader', () => {
     });
 
     it('should generate an error on http status greather than 299', async () => {
-      nock('http://fake-api')
-        .patch('/profile')
-        .reply(500);
+      nock('http://fake-api').patch('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
       let error;
@@ -285,9 +263,7 @@ describe('ApiReader', () => {
 
     it('should send a patch request and json parse the response', async () => {
       const payload = { id: 1, firstname: 'José', company: 'Sagacify' };
-      nock('http://fake-api', payload)
-        .patch('/profile')
-        .reply(200, payload);
+      nock('http://fake-api', payload).patch('/profile').reply(200, payload);
 
       const apiReader = new ApiReader('http://fake-api');
       const result = await apiReader.patch('/profile', { body: payload });

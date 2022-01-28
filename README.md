@@ -8,11 +8,13 @@
 
 ApiReader is a NodeJS & Browser package meant to simplify your requests to any Api.
 Browser version is based on native fetch to be as tiny as possible if you use treechecking in your toolbelt (like webpack, create-react-app, ...).
+Node version use node-fetch package under the hood to mmaximize code base and ease maintenance.
+
 It features:
 
 - API base url recording at constuction for smaller calls
 - automatic query string stringification (based on qs)
-- automatic request body JSON stringifying based body type (objects are stringified)
+- automatic request body JSON stringifying by default
 - automatic response body JSON parsing based on the Content-Type of the Api response
 - automatic base64 encoding on Basic Authentication
 - custom http error handling hook
@@ -75,6 +77,7 @@ main();
 
 - **baseUrl**: the base url of the api (e.g.: <https://api.twitter.com/2/>)
 - **options**:
+  - **json**: automatically JSON stringifying and Content-Type set to `application/json` (default: true)
   - **auth**:
     - **username**: the username of the Basic Authentication
     - **password**: the password of the Basic Authentication
@@ -91,11 +94,9 @@ main();
     }
     ```
 
-    > Note: if the final fetchOptions.body is an objet, it will be JSON stringified automatically and the Content-Type will set to "application/json"
+  - **httpErrorHandler**: an http error handler function which recieve the request object:
 
-  - **httpErrorHandler**: an http error handler function which recieve the request object.
-
-    The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Request):
+    The request object is a simplified plain version of [Request](https://developer.mozilla.org/fr/docs/Web/API/Request):
 
     ```js
     {
@@ -106,7 +107,7 @@ main();
     }
     ```
 
-    and the response object
+    and the response object:
     The reponse object is a simplified plain version of [Response](https://developer.mozilla.org/fr/docs/Web/API/Response):
 
     ```js
@@ -235,7 +236,6 @@ $ npm test:all
 
 ### To do
 
-- [ ] improve automatique response parsing, for now buffer are not managed
 - [ ] add browser unit tests
 
 ## Reporting bugs and contributing
