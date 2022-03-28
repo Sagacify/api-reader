@@ -1,5 +1,5 @@
-import qs from 'qs';
-import {
+import * as qs from 'qs';
+import type {
   Headers as nHeaders,
   BodyInit as nBodyInit,
   RequestInit as nRequestInit
@@ -10,7 +10,16 @@ type IsoHeaders = Headers | nHeaders;
 type IsoBody = BodyInit | nBodyInit | null;
 type IsoRequestInit = RequestInit | nRequestInit;
 
-type IsoFetch = (url: RequestInfo, init?: IsoRequestInit) => Promise<Response>;
+// Special types for handlers, JSON is still not stringified
+export interface IsoPreRequestInit
+  extends Omit<nRequestInit | IsoRequestInit, 'body'> {
+  body?: BodyInit | Record<string, unknown> | null;
+}
+
+export type IsoFetch = (
+  url: RequestInfo,
+  init?: IsoRequestInit
+) => Promise<Response>;
 
 type SimpleRequest = {
   url: string;
@@ -25,7 +34,7 @@ type SimpleResponse = {
   ok: boolean;
   redirected: boolean;
   type: string;
-  headers: object;
+  headers: Record<string, unknown>;
   body: unknown;
 };
 
@@ -34,7 +43,7 @@ type Auth = {
   password?: string;
 };
 
-type PreRequestHandler = (options: IsoRequestInit) => IsoRequestInit;
+type PreRequestHandler = (options: IsoPreRequestInit) => IsoPreRequestInit;
 type HttpErrorHandler = (req: SimpleRequest, res: SimpleResponse) => void;
 
 export type ApiReaderOptions = {
@@ -58,7 +67,7 @@ type ReqOptions = {
   method?: string;
   headers?: Record<string, string>;
   query?: Record<string, unknown>;
-  body?: (BodyInit & nBodyInit) | null;
+  body?: (BodyInit & nBodyInit) | Record<string, unknown> | null;
   auth?: Auth;
   json?: boolean;
 };
@@ -140,7 +149,7 @@ export class IsoApiReader {
     url.pathname = `${url.pathname}/${path}`.replace(/\/+/, '/');
     const reqHeaders = new this.Headers(headers);
 
-    let fetchOptions: IsoRequestInit = {
+    let fetchOptions: IsoPreRequestInit = {
       method: method.toUpperCase(),
       headers: this.mergeHeaders(this.baseHeaders, reqHeaders)
     };
@@ -161,7 +170,10 @@ export class IsoApiReader {
     }
 
     if (this.preRequestHandler) {
-      fetchOptions = this.preRequestHandler({ ...fetchOptions, body });
+      fetchOptions = this.preRequestHandler({
+        ...(fetchOptions as IsoRequestInit),
+        body
+      });
     }
 
     if (body !== undefined) {
@@ -178,7 +190,10 @@ export class IsoApiReader {
       }
     }
 
-    const fetchRes = await fetch(url.toString(), fetchOptions);
+    const fetchRes = await fetch(
+      url.toString(),
+      fetchOptions as IsoRequestInit
+    );
     const contentType = (fetchRes.headers.get('Content-Type') || '')
       .split(';', 1)[0]
       .toLocaleLowerCase()
@@ -227,27 +242,27 @@ export class IsoApiReader {
     return resBody;
   }
 
-  async head(path: string, options: DefniedReqOptions) {
+  async head(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'HEAD' });
   }
 
-  async get(path: string, options: DefniedReqOptions) {
+  async get(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'GET' });
   }
 
-  async post(path: string, options: DefniedReqOptions) {
+  async post(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'POST' });
   }
 
-  async put(path: string, options: DefniedReqOptions) {
+  async put(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'PUT' });
   }
 
-  async patch(path: string, options: DefniedReqOptions) {
+  async patch(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'PATCH' });
   }
 
-  async delete(path: string, options: DefniedReqOptions) {
+  async delete(path: string, options: DefniedReqOptions = {}) {
     return this.req(path, { ...options, method: 'DELETE' });
   }
 }
