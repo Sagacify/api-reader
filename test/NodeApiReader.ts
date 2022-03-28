@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import nock from 'nock';
-import { ApiReader } from '../../src/NodeApiReader';
+import { IsoPreRequestInit } from '../src/IsoApiReader.ts';
+import { ApiReader } from '../src/NodeApiReader.ts';
 
 describe('ApiReader', () => {
   describe('constructor', () => {
@@ -20,15 +21,18 @@ describe('ApiReader', () => {
       nock('http://fake-api').get('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
-      let error;
 
       try {
         await apiReader.get('/profile');
-      } catch (err) {
-        error = err;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message.startsWith('Http Error 500')).to.equal(true);
+          return;
+        }
+        throw err;
       }
 
-      expect(error.code).to.equal('HTTP_500');
+      expect.fail('Should throw 500 error');
     });
 
     it('should call preRequestHandler when defined', async () => {
@@ -41,9 +45,15 @@ describe('ApiReader', () => {
       let newFirstName;
 
       const apiReader = new ApiReader('http://fake-api', {
-        preRequestHandler: (fetchOptions) => {
+        preRequestHandler: (fetchOptions: IsoPreRequestInit) => {
           newFirstName = 'Nicolas';
-          fetchOptions.body.firstname = newFirstName;
+          if (
+            typeof fetchOptions.body === 'object' &&
+            fetchOptions.body !== null
+          ) {
+            (fetchOptions.body as Record<string, unknown>).firstname =
+              newFirstName;
+          }
 
           return fetchOptions;
         }
@@ -147,15 +157,18 @@ describe('ApiReader', () => {
       nock('http://fake-api').head('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
-      let error;
 
       try {
         await apiReader.head('/profile');
-      } catch (err) {
-        error = err;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message.startsWith('Http Error 500')).to.equal(true);
+          return;
+        }
+        throw err;
       }
 
-      expect(error.code).to.equal('HTTP_500');
+      expect.fail('Should throw 500 error');
     });
 
     it('should send an head request on the api', async () => {
@@ -182,21 +195,23 @@ describe('ApiReader', () => {
       nock('http://fake-api').post('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
-      let error;
-
       try {
         await apiReader.post('/profile');
-      } catch (err) {
-        error = err;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message.startsWith('Http Error 500')).to.equal(true);
+          return;
+        }
+        throw err;
       }
 
-      expect(error.code).to.equal('HTTP_500');
+      expect.fail('Should throw 500 error');
     });
 
     it('should send a post request and json parse the response', async () => {
       const payload = { firstname: 'Olivier', company: 'Sagacify' };
-      nock('http://fake-api', payload)
-        .post('/profile')
+      nock('http://fake-api')
+        .post('/profile', payload)
         .reply(201, { id: 1, ...payload });
 
       const apiReader = new ApiReader('http://fake-api');
@@ -219,15 +234,18 @@ describe('ApiReader', () => {
       nock('http://fake-api').put('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
-      let error;
 
       try {
         await apiReader.put('/profile');
-      } catch (err) {
-        error = err;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message.startsWith('Http Error 500')).to.equal(true);
+          return;
+        }
+        throw err;
       }
 
-      expect(error.code).to.equal('HTTP_500');
+      expect.fail('Should throw 500 error');
     });
 
     it('should send a put request and json parse the response', async () => {
@@ -250,20 +268,23 @@ describe('ApiReader', () => {
       nock('http://fake-api').patch('/profile').reply(500);
 
       const apiReader = new ApiReader('http://fake-api');
-      let error;
 
       try {
         await apiReader.patch('/profile');
-      } catch (err) {
-        error = err;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          expect(err.message.startsWith('Http Error 500')).to.equal(true);
+          return;
+        }
+        throw err;
       }
 
-      expect(error.code).to.equal('HTTP_500');
+      expect.fail('Should throw 500 error');
     });
 
     it('should send a patch request and json parse the response', async () => {
       const payload = { id: 1, firstname: 'José', company: 'Sagacify' };
-      nock('http://fake-api', payload).patch('/profile').reply(200, payload);
+      nock('http://fake-api').patch('/profile', payload).reply(200, payload);
 
       const apiReader = new ApiReader('http://fake-api');
       const result = await apiReader.patch('/profile', { body: payload });

@@ -1,13 +1,15 @@
-/* global fetch, Headers, btoa */
+import { IsoApiReader, ApiReaderOptions } from './IsoApiReader';
 
-const { IsoApiReader } = require('./IsoApiReader');
-
-module.exports.ApiReader = class ApiReader extends IsoApiReader {
-  constructor (baseUrl, options) {
-    super(baseUrl, options, {
-      fetch,
-      Headers,
-      btoa
-    });
+export class ApiReader extends IsoApiReader {
+  constructor(baseUrl: string, options: ApiReaderOptions) {
+    super(
+      {
+        fetch: window.fetch,
+        Headers: window.Headers,
+        btoa: window.btoa
+      },
+      baseUrl,
+      options
+    );
   }
-};
+}

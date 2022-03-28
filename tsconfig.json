@@ -5,14 +5,18 @@
     "transpileOnly": true
   },
   "compilerOptions": {
-    "declaration": true,
     "outDir": "build",
-    "target": "ES2018",
-    "module": "commonjs",
+    "module": "ES2020",
+    "target": "ES2020",
     "moduleResolution": "node",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": "./",
     "allowJs": true,
-    "esModuleInterop": true,
+    "checkJs": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "downlevelIteration": true,
@@ -27,12 +31,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": false,
-    "strict": true,
     "strictFunctionTypes": false,
     "strictPropertyInitialization": true,
-    "importsNotUsedAsValues": "remove",
     "sourceMap": false,
-    "resolveJsonModule": true,
     "types": [
       "node",
       "mocha"
@@ -43,9 +44,13 @@
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "test/**/*.js"
+    "src/**/*"
+  ],
+  "exclude": [
+    "build",
+    "coverage",
+    "node_modules",
+    ".vscode"
   ],
   "compileOnSave": false,
   "buildOnSave": false
