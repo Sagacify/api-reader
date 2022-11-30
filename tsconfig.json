@@ -1,0 +1,57 @@
+{
+  "ts-node": {
+    "files": true,
+    // Skipping typechecking makes tests run faster
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "outDir": "build",
+    "module": "ES2020",
+    "target": "ES2020",
+    "moduleResolution": "node",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
+    "allowJs": true,
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": false,
+    "inlineSources": false,
+    "noEmitHelpers": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": true,
+    "sourceMap": false,
+    "types": [
+      "node",
+      "mocha"
+    ],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "build",
+    "coverage",
+    "node_modules",
+    ".vscode"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
+}

@@ -1,0 +1,26 @@
+{
+  "ts-node": {
+    "files": true,
+    // Skipping typechecking makes tests run faster
+    "transpileOnly": true
+  },
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": false,
+    "alwaysStrict": false,
+    "skipLibCheck": true,
+    "strict": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "typeRoots" : [
+      "../node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "../node_modules"
+  ],
+  "include": [
+    "./**/*.ts"
+  ]
+}
